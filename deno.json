@@ -59,17 +59,13 @@
         "windows": "./src/icons/windows.ico",
         "linux": "./src/icons/linux.png",
         "macos": "./src/icons/macos.icns"
-      },
-      "deepLinks": [ ]
+      }
     },
-    "backend": "webview",
+    "backend": "cef",
     "output": {
       "windows": "./dist/build/template_desktop_app.msi",
       "linux": "./dist/build/template_desktop_app.rpm",
       "macos": "./dist/build/template_desktop_app.app"
-    },
-    "release": {
-      "baseUrl": "https://example.com/template-desktop-app"
     }
   },
   "unstable": [
@@ -124,6 +120,7 @@
     "typeLiteral.separatorKind": "comma"
   },
   "imports": {
-    "@lit": "npm:lit@^3.3.3"
+    "@lit": "npm:lit@^3.3.3",
+    "@std/http": "jsr:@std/http@^1.1.2"
   }
 }
