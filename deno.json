@@ -1,31 +1,35 @@
 {
+  "name": "template-desktop-app",
   "license": "./LICENSE",
   "tasks": {
-    "clear-dist": "rm -r ./dist/* || exit 0",
-    "clear-reports": "rm -r ./reports/* || exit 0",
+    "clear-dist": "rm -rf ./dist/*",
+    "clear-reports": "rm -rf ./reports/*",
     "install": {
       "description": "Install all dependencies specified in the \"deno.lock\" file.",
       "command": "deno install"
     },
+    "bundle": {
+      "description": "Bundle all app frontend files for production.",
+      "command": "deno bundle --outdir ./dist/bundle --minify src/client/index.html",
+      "dependencies": [ "clear-dist" ]
+    },
+    "bundle:watch": {
+      "description": "Bundle all app frontend files for production.",
+      "command": "deno task bundle --watch"
+    },
+    "bundle:development": {
+      "description": "Bundle all app frontend files for development.",
+      "command": "deno bundle --outdir ./dist/bundle --sourcemap src/client/index.html",
+      "dependencies": [ "clear-dist" ]
+    },
+    "bundle:development:watch": {
+      "description": "Bundle all app frontend files for development.",
+      "command": "deno task bundle:development --watch"
+    },
     "build": {
-      "description": "Build the app for production.",
-      "command": "deno run -A ./src/index.ts",
-      "dependencies": [ "clear-dist" ]
-    },
-    "build:dev": {
-      "description": "Build the app for development.",
-      "command": "deno run -A ./src/index.ts --develop",
-      "dependencies": [ "clear-dist" ]
-    },
-    "compile": {
-      "description": "Compile the app and generate executable.",
-      "command": "deno compile -A --no-terminal --include ./src/server --include ./dist --output app ./src/server/index.ts",
-      "dependencies": [ "build" ]
-    },
-    "compile:dev": {
-      "description": "Compile the app and generate executable for development.",
-      "command": "deno compile -A --include ./src/server --include ./dist --output app ./src/server/index.ts",
-      "dependencies": [ "build:dev" ]
+      "description": "Build the desktop executable for production.",
+      "command": "deno desktop -A ./src/server/index.ts",
+      "dependencies": [ "bundle" ]
     },
     "cache-reload": {
       "description": "Reload the dependency cache.",
@@ -45,19 +49,34 @@
       "dependencies": [ "clear-reports" ]
     }
   },
+  "compile": {
+    "include": [ "./dist/bundle" ]
+  },
+  "desktop": {
+    "app": {
+      "name": "template-desktop-app",
+      "icons": {
+        "windows": "./src/icons/windows.ico",
+        "linux": "./src/icons/linux.png",
+        "macos": "./src/icons/macos.icns"
+      },
+      "deepLinks": [ ]
+    },
+    "backend": "webview",
+    "output": {
+      "windows": "./dist/build/template_desktop_app.msi",
+      "linux": "./dist/build/template_desktop_app.rpm",
+      "macos": "./dist/build/template_desktop_app.app"
+    },
+    "release": {
+      "baseUrl": "https://example.com/template-desktop-app"
+    }
+  },
   "unstable": [
     "raw-imports",
+    "ffi",
     "bundle"
   ],
-  "compilerOptions": {
-    "module": "esnext",
-    "lib": [
-      "esnext",
-      "dom",
-      "webworker",
-      "decorators"
-    ]
-  },
   "exclude": [
     "./dist/"
   ],
@@ -67,10 +86,7 @@
     ]
   },
   "lint": {
-    "plugins": [
-      "jsr:@loat-dev/lint-plugins@0.3.12/imports",
-      "jsr:@loat-dev/lint-plugins@0.3.12/arrays"
-    ],
+    "plugins": [ ],
     "rules": {
       "tags": [
         "recommended"
@@ -108,14 +124,6 @@
     "typeLiteral.separatorKind": "comma"
   },
   "imports": {
-    "@deno/esbuild-plugin": "jsr:@deno/esbuild-plugin@^1.2.0",
-    "@esbuild": "npm:esbuild@^0.25.11",
-    "@justbe/webview": "jsr:@justbe/webview@^0.0.17",
-    "@std/cli": "jsr:@std/cli@^1.0.6",
-    "@std/http": "jsr:@std/http@^1.0.6",
-    "@std/fmt": "jsr:@std/fmt@^1.0.2",
-    "@std/path": "jsr:@std/path@^1.1.4",
-    "@webview/webview": "jsr:@webview/webview@^0.9.0",
-    "@lit": "npm:lit@^3.3.2"
+    "@lit": "npm:lit@^3.3.3"
   }
 }
